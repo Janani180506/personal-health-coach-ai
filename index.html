@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Health Coach AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+        
+        <!-- Header -->
+        <div class="bg-brand-50 p-8 border-b border-brand-100 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Personal Health Coach</h1>
+                <div class="flex gap-2 mt-2">
+                    <span class="px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-xs font-semibold uppercase tracking-wide">AI Agent</span>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold uppercase tracking-wide">Beta</span>
+                </div>
+            </div>
+            <!-- Close icon simulation -->
+            <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="flex flex-col md:flex-row">
+            
+            <!-- Input Section -->
+            <div class="w-full md:w-1/2 p-8 border-r border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Health Input
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Medical History</label>
+                        <textarea id="medicalHistory" rows="3" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all resize-none text-sm" placeholder="e.g., Diagnosed with hypertension 2 years ago, mild asthma..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Current Wellness Data</label>
+                        <textarea id="wellnessData" rows="3" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all resize-none text-sm" placeholder="e.g., Walked 3000 steps today, slept 5 hours, feeling sluggish..."></textarea>
+                    </div>
+
+                    <button id="analyzeBtn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 mt-4 flex items-center justify-center gap-2">
+                        <span>Analyze Health Data</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="w-full md:w-1/2 p-8 bg-gray-50 flex flex-col justify-center relative">
+                
+                <!-- Initial State -->
+                <div id="initialState" class="text-center text-gray-400">
+                    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.5 3.5l3.5 3.5 3.5-3.5M12 7v10M7 17l-3 3M17 17l3 3M4 10h16"></path></svg>
+                    <p class="text-sm">Enter your data to receive an AI-compressed health profile and personalized recommendations.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden absolute inset-0 bg-gray-50 flex items-center justify-center z-10">
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+                        <p class="text-sm text-brand-600 mt-3 font-medium animate-pulse">Compressing Bio-Data...</p>
+                    </div>
+                </div>
+
+                <!-- Results State -->
+                <div id="resultsState" class="hidden space-y-6 animate-fade-in">
+                    
+                    <!-- Compressed Profile Card -->
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Compressed Bio-Profile</h3>
+                        <div class="flex flex-wrap gap-2 mb-3" id="conditionsTags">
+                            <!-- Tags will be injected here -->
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-sm" id="metricsGrid">
+                            <!-- Metrics will be injected here -->
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Risk Assessment</span>
+                            <span id="riskLevel" class="text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-700">Low</span>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations Card -->
+                    <div class="bg-white p-5 rounded-xl border border-brand-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-brand-500"></div>
+                        <h3 class="text-xs font-bold text-brand-600 uppercase tracking-wider mb-3 flex items-center gap-2">
+                             Agent Recommendations
+                        </h3>
+                        <ul class="space-y-2 text-sm text-gray-600" id="recommendationsList">
+                            <!-- Recommendations will be injected here -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
